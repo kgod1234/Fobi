@@ -1,0 +1,10 @@
+^D:\PROJECT\ROBOCAFE\BUILD\CMAKEFILES\B836A3C15C62507E11A79CD868887FA4\GENERATE.STAMP.RULE
+setlocal
+C:\mingw64\bin\cmake.exe -SD:/Project/RoboCafe -BD:/Project/RoboCafe/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Project/RoboCafe/build/MyProject.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

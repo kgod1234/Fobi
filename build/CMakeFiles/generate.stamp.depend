@@ -1,0 +1,25 @@
+# CMake generation dependency list for this directory.
+C:/mingw64/share/cmake-3.28/Modules/CMakeCInformation.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeCXXInformation.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeCommonLanguageInclude.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeGenericSystem.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeInitializeConfigs.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeLanguageInformation.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeRCInformation.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeSystemSpecificInformation.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeSystemSpecificInitialize.cmake
+C:/mingw64/share/cmake-3.28/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/mingw64/share/cmake-3.28/Modules/Compiler/MSVC-C.cmake
+C:/mingw64/share/cmake-3.28/Modules/Compiler/MSVC-CXX.cmake
+C:/mingw64/share/cmake-3.28/Modules/Compiler/MSVC.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/Windows-Initialize.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/Windows-MSVC-C.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/Windows-MSVC.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/Windows.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/WindowsPaths.cmake
+D:/Project/RoboCafe/CMakeLists.txt
+D:/Project/RoboCafe/build/CMakeFiles/3.28.1/CMakeCCompiler.cmake
+D:/Project/RoboCafe/build/CMakeFiles/3.28.1/CMakeCXXCompiler.cmake
+D:/Project/RoboCafe/build/CMakeFiles/3.28.1/CMakeRCCompiler.cmake
+D:/Project/RoboCafe/build/CMakeFiles/3.28.1/CMakeSystem.cmake
