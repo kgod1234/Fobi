@@ -13,7 +13,7 @@
 #include "Mylibs\SimplifyDynamixel.h"                                  // Uses Dynamixel SDK library
 
 // Default setting
-#define BAUDRATE                        115200
+#define BAUDRATE                        57600
 #define DEVICENAME                      "COM7"      // Check which port is being used on your controller
                                                             // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 #define ESC_ASCII_VALUE                 0x1b

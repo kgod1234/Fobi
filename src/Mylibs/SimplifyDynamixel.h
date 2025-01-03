@@ -10,7 +10,7 @@ using namespace std;
 class Dynamixel {
 public :
      // Constructor to initialize the port and packet handlers
-    Dynamixel(std::string deviceName, int baudRate = 115200);
+    Dynamixel(std::string deviceName, int baudRate = 57600);
 
     // Destructor to clean up resources
     ~Dynamixel();
@@ -32,7 +32,7 @@ public :
 private :
     dynamixel::PortHandler *portHandler;
     dynamixel::PacketHandler *packetHandler;
-    int BAUDRATE = 115200;
+    int BAUDRATE = 57600;
 };
 
 #endif // MY_LIBRARY_H
