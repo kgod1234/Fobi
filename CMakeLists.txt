@@ -7,13 +7,10 @@ project(MyProject)
 # Add the executable
 add_executable(MyProject src/main.cpp src/Mylibs/SimplifyDynamixel.cpp)
 
-# Specify paths to Dynamixel SDK relative to the current folder
+# Specify paths to Dynamixel SDK
 set(MY_LIBRARY_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/DynamixelSDK-master/c++/include/dynamixel_sdk")
-set(MY_LIBRARY_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/DynamixelSDK-master/c++/build/win64/output")
-set(MY_LIBRARY_DLL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/DynamixelSDK-master/c++/build/win64/output")
-
-# Specify paths to custom libraries (Mylibs)
-set(MY_CUSTOM_LIB_DIR "${CMAKE_SOURCE_DIR}/src/Mylibs")  # Path to your custom Mylibs
+set(MY_LIBRARY_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/DynamixelSDK-master/c++/build/linux_sbc")
+set(MY_CUSTOM_LIB_DIR "${CMAKE_SOURCE_DIR}/src/Mylibs") # Path to your custom Mylibs
 
 # Include directories
 target_include_directories(MyProject PRIVATE
@@ -21,17 +18,16 @@ target_include_directories(MyProject PRIVATE
     "${MY_CUSTOM_LIB_DIR}"       # Custom Mylibs headers
 )
 
-# Link the Dynamixel SDK import library
-target_link_libraries(MyProject PRIVATE "${MY_LIBRARY_LIB_DIR}/dxl_x64_cpp.lib")
+# Link the Dynamixel SDK shared library (.so file)
+target_link_libraries(MyProject PRIVATE "${MY_LIBRARY_LIB_DIR}/libdxl_sbc_cpp.so")
 
-# Ensure the DLL is copied to the output directory after build
-add_custom_command(TARGET MyProject POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${MY_LIBRARY_DLL_DIR}/dxl_x64_cpp.dll"
-        $<TARGET_FILE_DIR:MyProject>
+# Optionally specify runtime library search path for the .so file
+# Ensures the program finds the shared library at runtime
+set_target_properties(MyProject PROPERTIES
+    BUILD_RPATH "${MY_LIBRARY_LIB_DIR}"
 )
 
-# # Optionally, specify the output directory for the executable
-# set_target_properties(MyProject PROPERTIES
-#     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-# )
+# Optionally specify the output directory for the executable
+set_target_properties(MyProject PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)

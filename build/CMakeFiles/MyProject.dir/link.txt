@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/MyProject.dir/src/main.cpp.o CMakeFiles/MyProject.dir/src/Mylibs/SimplifyDynamixel.cpp.o  -o bin/MyProject  -L/home/fobi/Fobi-Project/Fobi/libs/DynamixelSDK-master/c++/build/linux_sbc -Wl,-rpath,/home/fobi/Fobi-Project/Fobi/libs/DynamixelSDK-master/c++/build/linux_sbc -ldxl_sbc_cpp 

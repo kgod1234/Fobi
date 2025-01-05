@@ -10,11 +10,11 @@
 #include <stdio.h>
 
 #include "dynamixel_sdk.h"
-#include "Mylibs\SimplifyDynamixel.h"                                  // Uses Dynamixel SDK library
+#include "Mylibs/SimplifyDynamixel.h"                                  // Uses Dynamixel SDK library
 
 // Default setting
 #define BAUDRATE                        57600
-#define DEVICENAME                      "COM7"      // Check which port is being used on your controller
+#define DEVICENAME                      "/dev/ttyUSB0"      // Check which port is being used on your controller
                                                             // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 #define ESC_ASCII_VALUE                 0x1b
 
@@ -72,7 +72,7 @@ int main() {
     int target[2][2] = {{0,0},{4095,4095}};
     
     // Create a Dynamixel object and specify the device name and baud rate
-    Dynamixel dynamixel("COM7");
+    Dynamixel dynamixel("/dev/ttyUSB0",57600);
 
     // Open the port and set the baud rate
     dynamixel.OpenPort();
