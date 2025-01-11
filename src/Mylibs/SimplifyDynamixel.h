@@ -22,9 +22,13 @@ public :
     void TorqueEnable(string name, int id);
     void TorqueDisable(string name, int id[]);
     void TorqueDisable(string name, int id);
+    void ChangeMode(string name, string mode, int id);
 
-    void DriveTo(string name ,int id, int pos[]); // to write single dynamixel to goal position
+    void DriveTo(string name ,int id, int pos); // to write single dynamixel to goal position
     void SyncDriveTo(string name ,int id[], int pos[]); // to write multi dynamixel to goal position
+
+    void DriveSpeed(string name ,int id, int speed);
+    void SyncDriveSpeed(string name ,int id[], int speed[]);
 
     // Value Setting 
     int GetBAUDRATE() const { return BAUDRATE; }

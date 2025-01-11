@@ -145,3 +145,62 @@ void Dynamixel::SyncDriveTo(std::string name, int id[], int pos[]) {
     // Clear the parameter storage in GroupSyncWrite
     groupSyncWrite.clearParam();
 }
+
+void Dynamixel::ChangeMode(string name, string mode, int id){
+    uint8_t dxl_error = 0;  // Variable to store error status
+        int dxl_comm_result;   // Communication result
+        uint8_t operating_mode;
+
+        // Map the mode string to the corresponding operating mode value
+        if (mode == "position") {
+            operating_mode = 3;  // Position Control Mode
+        } else if (mode == "velocity") {
+            operating_mode = 1;  // Velocity Control Mode
+        } else if (mode == "pwm") {
+            operating_mode = 16;  // Torque Control Mode
+        } else {
+            std::cerr << "Invalid mode specified. Choose 'position', 'velocity', or 'pwm'." << std::endl;
+            return;
+        }
+
+        // Disable torque before changing the operating mode
+        if (name == "XL430_W250_T"){
+            Dynamixel::TorqueDisable("XL430_W250_T",id);
+        }
+
+        // Set the operating mode
+        dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, id, XL430_W250_T::ADDR_OPERATING_MODE, operating_mode, &dxl_error);
+        if (dxl_comm_result != COMM_SUCCESS) {
+            std::cerr << "Failed to change operating mode: " << packetHandler->getTxRxResult(dxl_comm_result) << std::endl;
+            return;
+        } else if (dxl_error != 0) {
+            std::cerr << "Operating mode change error: " << packetHandler->getRxPacketError(dxl_error) << std::endl;
+            return;
+        }
+
+        // Re-enable torque
+        if (name == "XL430_W250_T"){
+            Dynamixel::TorqueEnable("XL430_W250_T",id);
+        }
+
+        std::cout << "Mode successfully changed to " << mode << "." << std::endl;
+}
+
+void Dynamixel::DriveTo(string name ,int id, int pos){
+
+}
+
+void Dynamixel::DriveSpeed(string name ,int id, int speed){
+    uint8_t dxl_error = 0;  // Variable to store error status
+    int dxl_comm_result;   // Communication result
+     // Set goal velocity (speed)
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, id, XL430_W250_T::ADDR_GOAL_VELOCITY, speed, &dxl_error);
+    if (dxl_comm_result != COMM_SUCCESS) {
+        std::cerr << name << ": Failed to set speed: " << packetHandler->getTxRxResult(dxl_comm_result) << std::endl;
+        return;
+    } else if (dxl_error != 0) {
+        std::cerr << name << ": Speed set error: " << packetHandler->getRxPacketError(dxl_error) << std::endl;
+        return;
+    }
+
+}

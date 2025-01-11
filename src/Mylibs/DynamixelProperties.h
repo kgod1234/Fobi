@@ -11,6 +11,8 @@ struct XL430_W250_T {
     static const uint16_t ADDR_GOAL_POSITION = 116;       // Goal Position
     static const uint16_t ADDR_PRESENT_POSITION = 132;    // Present Position
     static const uint16_t ADDR_OPERATING_MODE = 11;       // Operating Mode
+
+    static const uint16_t ADDR_GOAL_VELOCITY = 104;
     static const uint16_t ADDR_VELOCITY_LIMIT = 44;       // Velocity Limit
 
     // Added addresses for control limits and mode
