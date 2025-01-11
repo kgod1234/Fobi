@@ -20,6 +20,11 @@ struct XL430_W250_T {
     static const uint16_t ADDR_MAX_POSITION_LIMIT = 48;   // Max Position Limit
     static const uint16_t ADDR_DRIVE_MODE = 10;           // Drive Mode
 
+    //PID
+    static const uint16_t ADDR_POSITION_P_GAIN = 84;
+    static const uint16_t ADDR_POSITION_I_GAIN = 82;
+    static const uint16_t ADDR_POSITION_D_GAIN = 80;
+
     // Len
     static const int LEN_POSITION = 4;
 

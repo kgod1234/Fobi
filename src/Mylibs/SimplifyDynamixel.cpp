@@ -187,7 +187,15 @@ void Dynamixel::ChangeMode(string name, string mode, int id){
 }
 
 void Dynamixel::DriveTo(string name ,int id, int pos){
+    uint8_t dxl_error = 0;
+    int dxl_comm_result;
 
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, id, XL430_W250_T::ADDR_GOAL_POSITION, pos, &dxl_error);
+    if (dxl_comm_result != COMM_SUCCESS) {
+        std::cerr << "Failed to set goal position: " << packetHandler->getTxRxResult(dxl_comm_result) << std::endl;
+    } else if (dxl_error != 0) {
+        std::cerr << "Goal position error: " << packetHandler->getRxPacketError(dxl_error) << std::endl;
+    }
 }
 
 void Dynamixel::DriveSpeed(string name ,int id, int speed){
@@ -203,4 +211,28 @@ void Dynamixel::DriveSpeed(string name ,int id, int speed){
         return;
     }
 
+}
+
+int Dynamixel::GetPresentPosition(string name, int id) {
+        uint8_t dxl_error = 0;
+        int dxl_comm_result;
+        int position = 0;
+
+        dxl_comm_result = packetHandler->read4ByteTxRx(portHandler, id, XL430_W250_T::ADDR_PRESENT_POSITION, (uint32_t *)&position, &dxl_error);
+        if (dxl_comm_result != COMM_SUCCESS) {
+            std::cerr << "Failed to read present position: " << packetHandler->getTxRxResult(dxl_comm_result) << std::endl;
+        } else if (dxl_error != 0) {
+            std::cerr << "Present position error: " << packetHandler->getRxPacketError(dxl_error) << std::endl;
+        }
+
+        return position;
+}
+
+void Dynamixel::SetPIDGains(string name, int id, int p_gain, int i_gain, int d_gain) {
+        uint8_t dxl_error = 0;
+        int dxl_comm_result;
+
+        packetHandler->write2ByteTxRx(portHandler, id, XL430_W250_T::ADDR_POSITION_P_GAIN, p_gain, &dxl_error);
+        packetHandler->write2ByteTxRx(portHandler, id, XL430_W250_T::ADDR_POSITION_I_GAIN, i_gain, &dxl_error);
+        packetHandler->write2ByteTxRx(portHandler, id, XL430_W250_T::ADDR_POSITION_D_GAIN, d_gain, &dxl_error);
 }
