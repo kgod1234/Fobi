@@ -6,6 +6,7 @@
 #include <conio.h>
 #endif
 
+#include "udp_common.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -18,6 +19,8 @@
 #define DEVICENAME                      "COM7"      // Check which port is being used on your controller
                                                             // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 #define ESC_ASCII_VALUE                 0x1b
+#define BAUDRATE 57600         // Dynamixel Baud Rate (example)
+
 
 int getch()
 {
@@ -67,75 +70,82 @@ int kbhit(void)
 #endif
 }
 
-int main() {
-    int index = 0;
-    int id[2] = {1,2};
-    int target[2][2] = {{0,0},{4095,4095}};
-    int speed[2] = {0,265};
-    
+void runClient() {
     // Create a Dynamixel object and specify the device name and baud rate
     Dynamixel dynamixel("COM7");
 
     // Open the port and set the baud rate
     dynamixel.SetBAUDRATE(BAUDRATE);
     dynamixel.OpenPort();
-    
 
-    int motorid = 1;
     dynamixel.TorqueEnable("XL430_W250_T", 1);
-    dynamixel.TorqueEnable("XL430_W250_T", 2);
 
-    // dynamixel.ChangeMode("XL430_W250_T", "position", 1);
-    // while(1) { // Test For Position Drive
-    //     printf("Press any key to continue! (or press ESC to quit!)\n");
-    //     if (getch() == ESC_ASCII_VALUE) {  // Wait for a key press
-    //         break;  // Exit the loop if ESC is pressed
-    //     }
-    //     dynamixel.SyncDriveTo("XL430_W250_T", id, target[index]);
-    //     if(index == 1){
-    //       index = 0;
-    //     }
-    //     else{
-    //       index = 1;
-    //     }
-    // }
+    dynamixel.ChangeMode("XL430_W250_T", "position", 1); // For PID Test using Position Control
+    dynamixel.SetPIDGains("XL430_W250_T", 1, 50, 0, 10);
 
-    // dynamixel.ChangeMode("XL430_W250_T", "velocity", 1);
-    // while (1) { // Test For Velocity Drive
-    //     std::cout << "Press any key to continue! (or press ESC to quit!)" << std::endl;
-        
-    //     // Wait for a key press
-    //     if (_getch() == ESC_ASCII_VALUE) {  
-    //         std::cout << "Exiting..." << std::endl;
-    //         break;  // Exit the loop if ESC is pressed
-    //     }
+    initializeSockets();
 
-    //     // Drive the Dynamixel at the current speed
-    //     dynamixel.DriveSpeed("XL430_W250_T", 1, speed[index]);
-    //     dynamixel.TorqueEnable("XL430_W250_T", 1);
+    SOCKET clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
+    if (clientSocket == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed!" << std::endl;
+        cleanupSockets();
+        return;
+    }
 
-    //     // Toggle the speed index
-    //     index = (index == 1) ? 0 : 1;
-    // }
+    sockaddr_in serverAddr{};
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serverAddr.sin_port = htons(9999);
 
-    // dynamixel.ChangeMode("XL430_W250_T", "position", 1); // For PID Test using Position Control
-    // dynamixel.SetPIDGains("XL430_W250_T", 1, 50, 0, 10);
-    // while (1) {
-    //     std::cout << "Press any key to move to the next position (or ESC to quit): " << std::endl;
-    //     if (_getch() == ESC_ASCII_VALUE) {
-    //         std::cout << "Exiting..." << std::endl;
-    //         break;
-    //     }
+    sockaddr_in recvAddr{};
+    socklen_t recvLen = sizeof(recvAddr);
 
-    //     // Drive to the next position
-    //     dynamixel.DriveTo("XL430_W250_T", 1, target[index][0]);
+    char buffer[1024];
+    std::cout << "Client is ready to receive commands." << std::endl;
 
-    //     // Toggle the position index
-    //     index = (index + 1) % 2;
-    // }
+    // Send initial connection message to server
+    std::string initMsg = "HELLO";
+    sendto(clientSocket, initMsg.c_str(), initMsg.size(), 0, (sockaddr*)&serverAddr, sizeof(serverAddr));
 
-    // dynamixel.TorqueDisable("XL430_W250_T", 1);
-    // dynamixel.TorqueDisable("XL430_W250_T", 2);
+    while (true) {
+        // Receive command
+        int recvResult = recvfrom(clientSocket, buffer, sizeof(buffer) - 1, 0, 
+                                  (sockaddr*)&recvAddr, &recvLen);
 
-    // return 0;
+        if (recvResult == SOCKET_ERROR) {
+            int error_code = WSAGetLastError();
+            std::cerr << "Error receiving data: " << error_code << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Avoid tight loop
+            continue;
+        }
+
+        if (recvResult > 0) {
+            buffer[recvResult] = '\0';
+            std::string command(buffer);
+            std::cout << "Received: " << command << std::endl;
+
+            // Simulate command execution
+            // std::this_thread::sleep_for(std::chrono::seconds(2));
+            dynamixel.DriveTo("XL430_W250_T", 1, stoi(command));
+            std::cout << "Executed: " << command << std::endl;
+
+            // Send acknowledgment
+            std::string ack = "ACK";
+            int ackResult = sendto(clientSocket, ack.c_str(), ack.size(), 0, (sockaddr*)&serverAddr, sizeof(serverAddr));
+            if (ackResult == SOCKET_ERROR) {
+                std::cerr << "Failed to send acknowledgment!" << std::endl;
+            } else {
+                std::cout << "Acknowledgment sent successfully." << std::endl;
+            }
+        }
+    }
+
+    std::cout << "Client is shutting down." << std::endl;
+    closesocket(clientSocket);
+    cleanupSockets();
+}
+
+int main() {
+    runClient();
+    return 0;
 }
